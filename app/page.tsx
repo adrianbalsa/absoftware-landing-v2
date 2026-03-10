@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, Variants, useInView } from "framer-motion";
 import {
   Shield,
   Smartphone,
@@ -14,15 +14,122 @@ import {
   AlertTriangle,
   ChevronRight,
   Zap,
+  Play,
+  Star,
+  Users,
+  Truck,
+  Clock,
+  Award,
+  MessageCircle,
+  ChevronDown,
+  Mail,
+  MapPin,
+  Phone,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
 const APP_URL = "https://app.ablogistics-os.com";
+const WHATSAPP_NUMBER = "34643747195";
+const WHATSAPP_MESSAGE = "Hola, me gustaría obtener más información sobre AB Logistics OS";
 
 const NAV_LINKS = [
   { label: "Funcionalidades", href: "#funcionalidades" },
+  { label: "Cómo Funciona", href: "#como-funciona" },
   { label: "Precios", href: "#precios" },
-  { label: "Calculadora ROI", href: "#calculadora" },
+  { label: "Testimonios", href: "#testimonios" },
+  { label: "FAQ", href: "#faq" },
+];
+
+const TRUSTED_LOGOS = [
+  { name: "DHL", logo: "DHL" },
+  { name: "SEUR", logo: "SEUR" },
+  { name: "MRW", logo: "MRW" },
+  { name: "GLS", logo: "GLS" },
+  { name: "Correos Express", logo: "CORREOS" },
+];
+
+const STATS = [
+  { value: 500, suffix: "+", label: "Empresas activas", icon: Users },
+  { value: 12000, suffix: "+", label: "Vehículos gestionados", icon: Truck },
+  { value: 99.9, suffix: "%", label: "Uptime garantizado", icon: Clock },
+  { value: 4.9, suffix: "/5", label: "Valoración media", icon: Star },
+];
+
+const HOW_IT_WORKS = [
+  {
+    step: "01",
+    title: "Regístrate en minutos",
+    description: "Crea tu cuenta gratuita sin tarjeta de crédito. Configura tu flota y empieza a trabajar en menos de 10 minutos.",
+    icon: Sparkles,
+  },
+  {
+    step: "02",
+    title: "Conecta tu operativa",
+    description: "Integra conductores, vehículos y rutas. Nuestro portal móvil permite a tus chóferes subir documentos al instante.",
+    icon: Smartphone,
+  },
+  {
+    step: "03",
+    title: "Optimiza y crece",
+    description: "Analiza márgenes, automatiza facturas VeriFactu y toma decisiones basadas en datos reales de tu negocio.",
+    icon: TrendingUp,
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Carlos Méndez",
+    role: "Director de Operaciones",
+    company: "Transportes Galicia Norte",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+    quote: "Desde que implementamos AB Logistics OS, hemos reducido un 35% el tiempo de gestión administrativa. La facturación VeriFactu es impecable.",
+    rating: 5,
+  },
+  {
+    name: "María García",
+    role: "Gerente",
+    company: "Logística Express Coruña",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+    quote: "El dashboard de EBITDA me permitió identificar rutas que perdían dinero. En 3 meses recuperamos la inversión del software.",
+    rating: 5,
+  },
+  {
+    name: "Antonio Rodríguez",
+    role: "Autónomo",
+    company: "Transportes Rodríguez",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    quote: "Como autónomo, necesitaba algo simple. El portal del conductor es genial: mis liquidaciones están listas en segundos.",
+    rating: 5,
+  },
+];
+
+const FAQS = [
+  {
+    question: "¿Qué es VeriFactu y por qué lo necesito?",
+    answer: "VeriFactu es el nuevo sistema de facturación electrónica obligatorio en España desde 2026. AB Logistics OS genera facturas con hash encadenado y registro inmutable, cumpliendo automáticamente con la Ley Antifraude sin que tengas que preocuparte por nada.",
+  },
+  {
+    question: "¿Puedo probar el software antes de pagar?",
+    answer: "Sí, ofrecemos 14 días de prueba gratuita con acceso completo a todas las funcionalidades. No necesitas tarjeta de crédito para empezar.",
+  },
+  {
+    question: "¿Cómo funciona el portal del conductor?",
+    answer: "Cada conductor recibe un enlace único con QR. Desde su móvil puede subir tickets de gasoil, CMRs y otros documentos escaneándolos. Todo se sincroniza al instante con tu panel de administración.",
+  },
+  {
+    question: "¿Se integra con mi software de contabilidad?",
+    answer: "Sí, ofrecemos integración con los principales ERPs y software contable del mercado. En el plan Enterprise incluimos integración personalizada con cualquier sistema.",
+  },
+  {
+    question: "¿Qué soporte ofrecéis?",
+    answer: "Todos los planes incluyen soporte por email. Los planes Pro y Enterprise incluyen soporte prioritario con tiempos de respuesta garantizados. Enterprise además incluye un gestor de cuenta dedicado.",
+  },
+  {
+    question: "¿Puedo cambiar de plan en cualquier momento?",
+    answer: "Sí, puedes subir o bajar de plan cuando quieras. Los cambios se aplican de forma prorrateada en tu siguiente factura.",
+  },
 ];
 
 const FEATURES = [
@@ -123,31 +230,36 @@ function Navbar() {
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-sm shadow-sm border-b border-slate-100"
+          ? "bg-white/80 backdrop-blur-xl shadow-lg shadow-slate-900/5 border-b border-slate-200/50"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-18 py-4">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-blue-800 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+          <a href="#" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-all duration-300">
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-slate-900 text-[15px] tracking-tight">
-              AB Logistics OS
-            </span>
+            <div className="flex flex-col">
+              <span className="font-bold text-slate-900 text-base tracking-tight">
+                AB Logistics OS
+              </span>
+              <span className="text-[10px] text-slate-500 font-medium -mt-0.5 hidden sm:block">
+                Software de Gestión Logística
+              </span>
+            </div>
           </a>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-1">
             {NAV_LINKS.map((l) => (
               <a
                 key={l.label}
                 href={l.href}
-                className="text-sm text-slate-600 hover:text-blue-700 font-medium transition-colors"
+                className="text-sm text-slate-600 hover:text-blue-700 font-medium px-4 py-2 rounded-lg hover:bg-blue-50 transition-all duration-200"
               >
                 {l.label}
               </a>
@@ -155,24 +267,28 @@ function Navbar() {
           </div>
 
           {/* Desktop CTAs */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             <a
-              href="mailto:hola@ablogistics-os.com"
-              className="text-sm font-medium text-slate-700 border border-slate-200 rounded-xl px-4 py-2 hover:border-blue-300 hover:text-blue-700 transition-all"
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-slate-700 border border-slate-200 rounded-xl px-4 py-2.5 hover:border-green-400 hover:text-green-600 hover:bg-green-50 transition-all duration-200 flex items-center gap-2"
             >
+              <MessageCircle className="w-4 h-4" />
               Contactar
             </a>
             <a
               href={APP_URL}
-              className="text-sm font-semibold bg-blue-800 text-white rounded-xl px-4 py-2 hover:bg-blue-700 transition-all shadow-sm hover:shadow-md"
+              className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl px-5 py-2.5 hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30 flex items-center gap-2"
             >
               Acceso Clientes
+              <ArrowRight className="w-4 h-4" />
             </a>
           </div>
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 rounded-lg text-slate-700"
+            className="lg:hidden p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -187,25 +303,36 @@ function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-slate-100 px-4 pb-4 overflow-hidden"
+            className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 pb-6 overflow-hidden"
           >
-            <div className="flex flex-col gap-3 pt-2">
+            <div className="flex flex-col gap-1 pt-2">
               {NAV_LINKS.map((l) => (
                 <a
                   key={l.label}
                   href={l.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-sm font-medium text-slate-700 py-2 border-b border-slate-50"
+                  className="text-sm font-medium text-slate-700 py-3 px-4 rounded-xl hover:bg-slate-100 transition-colors"
                 >
                   {l.label}
                 </a>
               ))}
-              <a
-                href={APP_URL}
-                className="mt-2 text-center text-sm font-semibold bg-blue-800 text-white rounded-xl px-4 py-2.5"
-              >
-                Acceso Clientes
-              </a>
+              <div className="border-t border-slate-100 mt-4 pt-4 flex flex-col gap-3">
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-center text-sm font-medium text-green-600 border border-green-200 bg-green-50 rounded-xl px-4 py-3 flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp
+                </a>
+                <a
+                  href={APP_URL}
+                  className="text-center text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl px-4 py-3"
+                >
+                  Acceso Clientes
+                </a>
+              </div>
             </div>
           </motion.div>
         )}
@@ -217,30 +344,36 @@ function Navbar() {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-to-b from-slate-50 via-white to-blue-50 overflow-hidden pt-16">
-      {/* Subtle grid background */}
+    <section className="relative min-h-screen flex items-center bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 overflow-hidden pt-20">
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/30 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-indigo-500/25 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[150px]" />
+      </div>
+      
+      {/* Grid pattern overlay */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage:
-            "linear-gradient(#1E3A8A 1px, transparent 1px), linear-gradient(90deg, #1E3A8A 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
+            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
         }}
       />
-      {/* Blue glow top right */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100 rounded-full opacity-30 blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-        {/* Badge */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 text-center z-10">
+        {/* Badge with glow */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={0}
-          className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-8"
+          className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-blue-300 text-xs font-semibold px-5 py-2 rounded-full mb-8 shadow-lg shadow-blue-500/10"
         >
-          <Shield className="w-3.5 h-3.5" />
-          Adaptado a la normativa española VeriFactu 2026
+          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          Nuevo: Adaptado a VeriFactu 2026
+          <ChevronRight className="w-3.5 h-3.5" />
         </motion.div>
 
         {/* Headline */}
@@ -249,10 +382,12 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={1}
-          className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight max-w-4xl mx-auto"
+          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-[1.1] tracking-tight max-w-5xl mx-auto text-balance"
         >
-          Inteligencia Logística y{" "}
-          <span className="text-blue-700">Control de Márgenes.</span>
+          Inteligencia Logística para{" "}
+          <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+            Flotas Rentables
+          </span>
         </motion.h1>
 
         {/* Subheadline */}
@@ -261,10 +396,10 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={2}
-          className="mt-6 text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed text-pretty"
         >
-          El ERP diseñado para proteger la rentabilidad de tu flota, automatizar
-          la facturación y cumplir con la nueva Ley Antifraude (VeriFactu).
+          El ERP que protege la rentabilidad de tu flota, automatiza la facturación
+          y cumple con la Ley Antifraude. Usado por más de 500 empresas en España.
         </motion.p>
 
         {/* CTAs */}
@@ -277,16 +412,20 @@ function Hero() {
         >
           <a
             href={APP_URL}
-            className="inline-flex items-center gap-2 bg-blue-800 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200"
+            className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-400 hover:to-indigo-400 text-white font-semibold text-base px-8 py-4 rounded-2xl shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 overflow-hidden"
           >
-            Empezar Prueba Gratuita
-            <ChevronRight className="w-4 h-4" />
+            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+            <span className="relative flex items-center gap-2">
+              Empezar Prueba Gratuita
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </span>
           </a>
           <a
-            href="mailto:hola@ablogistics-os.com"
-            className="inline-flex items-center gap-2 text-blue-800 font-semibold text-sm px-7 py-3.5 rounded-2xl border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+            href="#como-funciona"
+            className="group inline-flex items-center gap-2 text-white/90 font-semibold text-base px-8 py-4 rounded-2xl border-2 border-white/20 hover:border-white/40 hover:bg-white/5 backdrop-blur-sm transition-all duration-300"
           >
-            Solicitar Demo
+            <Play className="w-5 h-5 text-blue-400" />
+            Ver Cómo Funciona
           </a>
         </motion.div>
 
@@ -296,32 +435,245 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={4}
-          className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400"
+          className="mt-10 flex flex-wrap items-center justify-center gap-8 text-sm text-slate-500"
         >
-          {["Sin tarjeta de crédito", "14 días gratis", "Cancela cuando quieras"].map((t) => (
-            <span key={t} className="flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-green-500" />
-              {t}
+          {[
+            { icon: Check, text: "Sin tarjeta de crédito" },
+            { icon: Clock, text: "14 días gratis" },
+            { icon: Shield, text: "Cumple VeriFactu" },
+          ].map((t) => (
+            <span key={t.text} className="flex items-center gap-2">
+              <t.icon className="w-4 h-4 text-blue-400" />
+              <span className="text-slate-400">{t.text}</span>
             </span>
           ))}
         </motion.div>
 
-        {/* MOCKUP IMAGE (AÑADIDO CORRECTAMENTE AQUÍ) */}
+        {/* Dashboard mockup with glassmorphism frame */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={5}
-          className="mt-16 max-w-5xl mx-auto relative rounded-xl overflow-hidden shadow-2xl border border-slate-200/50"
+          className="mt-16 lg:mt-20 max-w-5xl mx-auto relative"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 to-transparent pointer-events-none"></div>
-          <img 
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" 
-            alt="Dashboard de AB Logistics OS" 
-            className="w-full h-auto object-cover rounded-xl"
-          />
+          {/* Glow effect behind */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 rounded-3xl blur-3xl scale-95" />
+          
+          {/* Main container */}
+          <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm p-2 shadow-2xl">
+            <div className="rounded-xl lg:rounded-2xl overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" 
+                alt="Dashboard de AB Logistics OS mostrando métricas de flota" 
+                className="w-full h-auto object-cover"
+              />
+            </div>
+            
+            {/* Floating stats cards */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              className="absolute -left-4 lg:-left-8 top-1/4 bg-white/95 backdrop-blur-xl rounded-xl p-4 shadow-2xl border border-slate-200/50 hidden md:block"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Margen Mensual</p>
+                  <p className="text-lg font-bold text-green-600">+23.5%</p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.2, duration: 0.5 }}
+              className="absolute -right-4 lg:-right-8 bottom-1/4 bg-white/95 backdrop-blur-xl rounded-xl p-4 shadow-2xl border border-slate-200/50 hidden md:block"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <Truck className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Vehículos Activos</p>
+                  <p className="text-lg font-bold text-slate-900">1,247</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ─── TRUSTED BY LOGOS ──────────────────────────────────────────────────────────
+function TrustedBy() {
+  return (
+    <section className="py-16 bg-white border-b border-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center text-sm text-slate-500 mb-10"
+        >
+          Empresas de transporte que confían en nosotros
+        </motion.p>
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8"
+        >
+          {TRUSTED_LOGOS.map((logo, i) => (
+            <motion.div
+              key={logo.name}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="text-2xl font-bold text-slate-300 hover:text-slate-400 transition-colors cursor-default"
+            >
+              {logo.logo}
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ─── ANIMATED STATS ────────────────────────────────────────────────────────────
+function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (!isInView) return;
+    const duration = 2000;
+    const steps = 60;
+    const increment = value / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= value) {
+        setCount(value);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
+    return () => clearInterval(timer);
+  }, [isInView, value]);
+
+  return (
+    <span ref={ref}>
+      {value === 4.9 ? count.toFixed(1) : count.toLocaleString("es-ES")}{suffix}
+    </span>
+  );
+}
+
+function StatsSection() {
+  return (
+    <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 relative overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/3 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          {STATS.map((stat, i) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={stat.label}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={i}
+                className="text-center"
+              >
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm mb-4">
+                  <Icon className="w-7 h-7 text-blue-400" />
+                </div>
+                <p className="text-3xl lg:text-4xl font-extrabold text-white mb-2">
+                  <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                </p>
+                <p className="text-sm text-slate-400">{stat.label}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── HOW IT WORKS ──────────────────────────────────────────────────────────────
+function HowItWorks() {
+  return (
+    <section id="como-funciona" className="py-24 bg-slate-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest">
+            Cómo Funciona
+          </span>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 text-balance">
+            Empieza en 3 simples pasos
+          </h2>
+          <p className="mt-4 text-slate-500 max-w-xl mx-auto">
+            Configurar tu cuenta es rápido y sencillo. Sin complicaciones técnicas.
+          </p>
         </motion.div>
 
+        <div className="grid md:grid-cols-3 gap-8">
+          {HOW_IT_WORKS.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={item.step}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={i}
+                className="relative"
+              >
+                {/* Connector line */}
+                {i < HOW_IT_WORKS.length - 1 && (
+                  <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-blue-200 to-transparent -translate-x-1/2 z-0" />
+                )}
+                
+                <div className="relative bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-lg hover:border-blue-100 transition-all duration-300 z-10">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25">
+                      <Icon className="w-7 h-7 text-white" />
+                    </div>
+                    <span className="text-4xl font-extrabold text-slate-200">{item.step}</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h3>
+                  <p className="text-slate-500 leading-relaxed">{item.description}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -756,73 +1108,305 @@ function Pricing() {
   );
 }
 
+// ─── TESTIMONIALS ──────────────────────────────────────────────────────────────
+function Testimonials() {
+  return (
+    <section id="testimonios" className="py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest">
+            Testimonios
+          </span>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 text-balance">
+            Lo que dicen nuestros clientes
+          </h2>
+          <p className="mt-4 text-slate-500 max-w-xl mx-auto">
+            Más de 500 empresas de transporte confían en AB Logistics OS para gestionar su operativa diaria.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {TESTIMONIALS.map((testimonial, i) => (
+            <motion.div
+              key={testimonial.name}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={i}
+              className="bg-slate-50 rounded-2xl p-8 relative"
+            >
+              {/* Quote mark */}
+              <div className="absolute top-6 right-6 text-6xl text-slate-200 font-serif leading-none">
+                &ldquo;
+              </div>
+              
+              {/* Rating */}
+              <div className="flex gap-1 mb-4">
+                {[...Array(testimonial.rating)].map((_, j) => (
+                  <Star key={j} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                ))}
+              </div>
+
+              {/* Quote */}
+              <p className="text-slate-600 leading-relaxed mb-6 relative z-10">
+                &ldquo;{testimonial.quote}&rdquo;
+              </p>
+
+              {/* Author */}
+              <div className="flex items-center gap-4">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <p className="font-semibold text-slate-900">{testimonial.name}</p>
+                  <p className="text-sm text-slate-500">{testimonial.role}</p>
+                  <p className="text-xs text-blue-600 font-medium">{testimonial.company}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
+function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <section id="faq" className="py-24 bg-slate-50">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest">
+            FAQ
+          </span>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 text-balance">
+            Preguntas frecuentes
+          </h2>
+          <p className="mt-4 text-slate-500">
+            Todo lo que necesitas saber sobre AB Logistics OS.
+          </p>
+        </motion.div>
+
+        <div className="space-y-4">
+          {FAQS.map((faq, i) => (
+            <motion.div
+              key={i}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={i}
+              className="bg-white rounded-2xl border border-slate-100 overflow-hidden"
+            >
+              <button
+                onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors"
+              >
+                <span className="font-semibold text-slate-900 pr-4">{faq.question}</span>
+                <ChevronDown
+                  className={`w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300 ${
+                    openIndex === i ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <AnimatePresence>
+                {openIndex === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-6 pb-6 text-slate-500 leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── CTA BANNER ────────────────────────────────────────────────────────────────
+function CTABanner() {
+  return (
+    <section className="py-24 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 text-balance">
+            Empieza a proteger los márgenes de tu flota hoy
+          </h2>
+          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+            Únete a más de 500 empresas de transporte que ya optimizan su rentabilidad con AB Logistics OS.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href={APP_URL}
+              className="group inline-flex items-center gap-2 bg-white text-blue-600 font-semibold text-base px-8 py-4 rounded-2xl shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:shadow-blue-900/30 transition-all duration-300"
+            >
+              Empezar Prueba Gratuita
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </a>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-white font-semibold text-base px-8 py-4 rounded-2xl border-2 border-white/30 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Hablar por WhatsApp
+            </a>
+          </div>
+
+          <p className="mt-8 text-sm text-blue-200">
+            Sin tarjeta de crédito requerida. 14 días de prueba gratuita.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ─── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────────────
+function WhatsAppButton() {
+  return (
+    <a
+      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-3.5 rounded-full shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 group"
+    >
+      <span className="absolute -inset-1 bg-green-400 rounded-full animate-ping opacity-20" />
+      <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      <span className="hidden sm:inline">WhatsApp</span>
+    </a>
+  );
+}
+
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-400 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-3 gap-10 mb-12">
+    <footer className="bg-slate-950 text-slate-400">
+      {/* Main footer */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-                <Zap className="w-3.5 h-3.5 text-white" />
+          <div className="col-span-2 md:col-span-1">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25">
+                <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-white text-sm">AB Logistics OS</span>
+              <span className="font-bold text-white text-lg">AB Logistics OS</span>
             </div>
-            <p className="text-sm leading-relaxed">
-              Software de gestión de transporte y logística en Galicia.
-              Desarrollado en A Coruña.
+            <p className="text-sm leading-relaxed mb-6">
+              El ERP de transporte y logística más completo de España. Diseñado en A Coruña, Galicia.
             </p>
+            <div className="flex gap-3">
+              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+              </a>
+              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+            </div>
           </div>
 
-          {/* Links */}
+          {/* Links - Producto */}
           <div>
             <h4 className="text-sm font-semibold text-white mb-4">Producto</h4>
-            <ul className="space-y-2 text-sm">
-              {["Funcionalidades", "Precios", "Calculadora ROI", "VeriFactu"].map((l) => (
-                <li key={l}>
-                  <a href="#" className="hover:text-white transition-colors">
-                    {l}
-                  </a>
-                </li>
-              ))}
+            <ul className="space-y-3 text-sm">
+              <li><a href="#funcionalidades" className="hover:text-white transition-colors">Funcionalidades</a></li>
+              <li><a href="#precios" className="hover:text-white transition-colors">Precios</a></li>
+              <li><a href="#calculadora" className="hover:text-white transition-colors">Calculadora ROI</a></li>
+              <li><a href="#como-funciona" className="hover:text-white transition-colors">Cómo Funciona</a></li>
+              <li><a href="#testimonios" className="hover:text-white transition-colors">Testimonios</a></li>
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Links - Recursos */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Aviso Legal
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Política de Privacidad (RGPD)
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Política de Cookies
-                </a>
-              </li>
-              <li>
+            <h4 className="text-sm font-semibold text-white mb-4">Recursos</h4>
+            <ul className="space-y-3 text-sm">
+              <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Guía VeriFactu</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">API Docs</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Centro de Ayuda</a></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-sm font-semibold text-white mb-4">Contacto</h4>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-blue-400" />
                 <a href="mailto:hola@ablogistics-os.com" className="hover:text-white transition-colors">
                   hola@ablogistics-os.com
                 </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-blue-400" />
+                <a href={`tel:+${WHATSAPP_NUMBER}`} className="hover:text-white transition-colors">
+                  +34 643 747 195
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-blue-400 mt-0.5" />
+                <span>A Coruña, Galicia<br />España</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-slate-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
-          <p>© 2026 AB Logistics OS. Todos los derechos reservados.</p>
-          <p className="text-slate-500 text-center">
-            Software de gestión de transporte y logística en Galicia · Desarrollado en A Coruña
-          </p>
+        {/* Legal links */}
+        <div className="border-t border-slate-800 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm">© 2026 AB Logistics OS. Todos los derechos reservados.</p>
+            <div className="flex flex-wrap justify-center gap-6 text-sm">
+              <a href="#" className="hover:text-white transition-colors">Aviso Legal</a>
+              <a href="#" className="hover:text-white transition-colors">Privacidad (RGPD)</a>
+              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+              <a href="#" className="hover:text-white transition-colors">Términos de Servicio</a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
@@ -835,10 +1419,17 @@ export default function Page() {
     <main>
       <Navbar />
       <Hero />
-      <ROICalculator />
+      <TrustedBy />
+      <StatsSection />
+      <HowItWorks />
       <Features />
+      <ROICalculator />
       <Pricing />
+      <Testimonials />
+      <FAQ />
+      <CTABanner />
       <Footer />
+      <WhatsAppButton />
     </main>
   );
 }

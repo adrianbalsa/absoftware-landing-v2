@@ -55,7 +55,7 @@ const FEATURES = [
 const PLANS = [
   {
     name: "Starter",
-    price: "49",
+    price: "19",
     description: "Para autónomos y microempresas",
     popular: false,
     features: [
@@ -68,7 +68,7 @@ const PLANS = [
   },
   {
     name: "Pro",
-    price: "129",
+    price: "49",
     description: "Para flotas de 2 a 20 vehículos",
     popular: true,
     features: [
@@ -83,7 +83,7 @@ const PLANS = [
   },
   {
     name: "Enterprise",
-    price: "Custom",
+    price: "89",
     description: "Para grandes operadores logísticos",
     popular: false,
     features: [
@@ -641,8 +641,15 @@ function Features() {
 // ─── PRICING ──────────────────────────────────────────────────────────────────
 function Pricing() {
   return (
-    <section id="precios" className="py-24 bg-[#F8FAFC]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="precios" className="py-24 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -650,13 +657,13 @@ function Pricing() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-xs font-semibold text-blue-700 uppercase tracking-widest">
+          <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
             Precios
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">
+          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-white">
             Planes simples y transparentes
           </h2>
-          <p className="mt-3 text-slate-500 max-w-xl mx-auto">
+          <p className="mt-3 text-slate-400 max-w-xl mx-auto">
             Sin costes ocultos. Escala cuando crezcas. Cancela cuando quieras.
           </p>
         </motion.div>
@@ -670,101 +677,77 @@ function Pricing() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={i}
-              className={`relative rounded-2xl p-8 flex flex-col border transition-shadow duration-200 ${
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className={`relative rounded-3xl p-8 flex flex-col border backdrop-blur-xl transition-all duration-300 ${
                 plan.popular
-                  ? "bg-blue-800 border-blue-700 shadow-lg shadow-blue-900/20"
-                  : "bg-white border-slate-100 shadow-sm hover:shadow-md"
+                  ? "bg-white/15 border-white/30 shadow-2xl shadow-blue-500/20"
+                  : "bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/30"
               }`}
             >
+              {/* Glassmorphism inner glow */}
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
+
               {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="bg-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-sm">
+                  <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-blue-500/30">
                     Más popular
                   </span>
                 </div>
               )}
 
-              <div className="mb-6">
-                <h3
-                  className={`text-xl font-bold mb-1 ${
-                    plan.popular ? "text-white" : "text-slate-900"
-                  }`}
-                >
+              <div className="mb-6 relative z-10">
+                <h3 className="text-xl font-bold mb-1 text-white">
                   {plan.name}
                 </h3>
-                <p
-                  className={`text-sm ${
-                    plan.popular ? "text-blue-200" : "text-slate-500"
-                  }`}
-                >
+                <p className="text-sm text-slate-400">
                   {plan.description}
                 </p>
               </div>
 
-              <div className="mb-8">
-                {plan.price === "Custom" ? (
-                  <span
-                    className={`text-3xl font-extrabold ${
-                      plan.popular ? "text-white" : "text-slate-900"
-                    }`}
-                  >
-                    A medida
+              <div className="mb-8 relative z-10">
+                <div className="flex items-end gap-1">
+                  <span className="text-4xl font-extrabold text-white">
+                    {plan.price}€
                   </span>
-                ) : (
-                  <div className="flex items-end gap-1">
-                    <span
-                      className={`text-4xl font-extrabold ${
-                        plan.popular ? "text-white" : "text-slate-900"
-                      }`}
-                    >
-                      {plan.price}€
-                    </span>
-                    <span
-                      className={`text-sm pb-1 ${
-                        plan.popular ? "text-blue-200" : "text-slate-500"
-                      }`}
-                    >
-                      /mes
-                    </span>
-                  </div>
-                )}
+                  <span className="text-sm pb-1 text-slate-400">
+                    /mes
+                  </span>
+                </div>
               </div>
 
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-3 mb-8 flex-1 relative z-10">
                 {plan.features.map((feat) => (
                   <li key={feat} className="flex items-center gap-3">
-                    <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        plan.popular ? "bg-blue-600" : "bg-blue-50"
-                      }`}
-                    >
-                      <Check
-                        className={`w-3 h-3 ${
-                          plan.popular ? "text-white" : "text-blue-700"
-                        }`}
-                      />
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      plan.popular ? "bg-blue-500/30" : "bg-white/10"
+                    }`}>
+                      <Check className="w-3 h-3 text-blue-400" />
                     </div>
-                    <span
-                      className={`text-sm ${
-                        plan.popular ? "text-blue-100" : "text-slate-600"
-                      }`}
-                    >
+                    <span className="text-sm text-slate-300">
                       {feat}
                     </span>
                   </li>
                 ))}
               </ul>
 
-              <a
-                href={APP_URL}
-                className={`text-center text-sm font-semibold py-3 rounded-xl transition-all duration-200 ${
-                  plan.popular
-                    ? "bg-white text-blue-800 hover:bg-blue-50"
-                    : "bg-blue-800 text-white hover:bg-blue-700"
-                }`}
-              >
-                Crear Cuenta
-              </a>
+              {plan.popular ? (
+                <a
+                  href={APP_URL}
+                  className="relative overflow-hidden text-center text-sm font-semibold py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-400 hover:to-indigo-400 transition-all duration-300 shadow-lg shadow-blue-500/30 group z-10"
+                >
+                  {/* Shine animation */}
+                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
+                  <span className="relative">Crear Cuenta</span>
+                </a>
+              ) : (
+                <a
+                  href={APP_URL}
+                  className="text-center text-sm font-semibold py-3.5 rounded-xl bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300 z-10"
+                >
+                  Crear Cuenta
+                </a>
+              )}
             </motion.div>
           ))}
         </div>
@@ -846,7 +829,7 @@ function Footer() {
   );
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
+// ─── PAGE ──────────────────────────────────────────────────���──────────────────
 export default function Page() {
   return (
     <main>

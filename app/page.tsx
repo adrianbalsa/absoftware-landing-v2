@@ -217,7 +217,7 @@ function Navbar() {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center bg-white overflow-hidden pt-16">
+    <section className="relative min-h-screen flex items-center bg-gradient-to-b from-slate-50 via-white to-blue-50 overflow-hidden pt-16">
       {/* Subtle grid background */}
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -305,11 +305,27 @@ function Hero() {
             </span>
           ))}
         </motion.div>
+
+        {/* MOCKUP IMAGE (AÑADIDO CORRECTAMENTE AQUÍ) */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={5}
+          className="mt-16 max-w-5xl mx-auto relative rounded-xl overflow-hidden shadow-2xl border border-slate-200/50"
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 to-transparent pointer-events-none"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" 
+            alt="Dashboard de AB Logistics OS" 
+            className="w-full h-auto object-cover rounded-xl"
+          />
+        </motion.div>
+
       </div>
     </section>
   );
 }
-
 // ─── ROI CALCULATOR ───────────────────────────────────────────────────────────
 function ROICalculator() {
   const [income, setIncome] = useState(850);

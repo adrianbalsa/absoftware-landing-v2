@@ -514,14 +514,20 @@ function Hero() {
 // ─── TRUSTED BY LOGOS ──────────────────────────────────────────────────────────
 function TrustedBy() {
   return (
-    <section className="py-16 bg-white border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+      {/* Subtle floating orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-blue-200/30 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-10 right-20 w-40 h-40 bg-indigo-200/30 rounded-full blur-3xl animate-float-reverse" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.p
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center text-sm text-slate-500 mb-10"
+          className="text-center text-sm font-medium text-slate-500 mb-12"
         >
           Empresas de transporte que confían en nosotros
         </motion.p>
@@ -530,7 +536,7 @@ function TrustedBy() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8"
+          className="flex flex-wrap items-center justify-center gap-x-16 gap-y-10"
         >
           {TRUSTED_LOGOS.map((logo, i) => (
             <motion.div
@@ -539,7 +545,8 @@ function TrustedBy() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="text-2xl font-bold text-slate-300 hover:text-slate-400 transition-colors cursor-default"
+              whileHover={{ scale: 1.1, y: -4 }}
+              className="text-2xl font-bold text-slate-300 hover:text-blue-500 transition-all duration-300 cursor-default"
             >
               {logo.logo}
             </motion.div>
@@ -583,14 +590,24 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 
 function StatsSection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 relative overflow-hidden">
+    <section className="py-24 relative overflow-hidden">
+      {/* Animated mesh gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.3),_transparent_50%)]" />
+          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_rgba(139,92,246,0.3),_transparent_50%)]" />
+        </div>
+      </div>
+      
+      {/* Floating orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/3 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-[100px] animate-float-slow" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-violet-500/20 rounded-full blur-[100px] animate-float-reverse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] animate-glow-pulse" />
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
           {STATS.map((stat, i) => {
             const Icon = stat.icon;
             return (
@@ -601,15 +618,19 @@ function StatsSection() {
                 whileInView="visible"
                 viewport={{ once: true }}
                 custom={i}
-                className="text-center"
+                whileHover={{ scale: 1.05, y: -8 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="text-center group"
               >
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm mb-4">
-                  <Icon className="w-7 h-7 text-blue-400" />
+                <div className="glass rounded-3xl p-8 hover:bg-white/10 transition-all duration-500">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/30 to-violet-500/30 mb-6 group-hover:from-blue-500/50 group-hover:to-violet-500/50 transition-all duration-500">
+                    <Icon className="w-8 h-8 text-blue-300 group-hover:text-white transition-colors duration-300" />
+                  </div>
+                  <p className="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent mb-3">
+                    <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                  </p>
+                  <p className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">{stat.label}</p>
                 </div>
-                <p className="text-3xl lg:text-4xl font-extrabold text-white mb-2">
-                  <AnimatedNumber value={stat.value} suffix={stat.suffix} />
-                </p>
-                <p className="text-sm text-slate-400">{stat.label}</p>
               </motion.div>
             );
           })}
@@ -622,27 +643,35 @@ function StatsSection() {
 // ─── HOW IT WORKS ──────────────────────────────────────────────────────────────
 function HowItWorks() {
   return (
-    <section id="como-funciona" className="py-24 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="como-funciona" className="py-28 bg-gradient-to-b from-white via-slate-50/50 to-white relative overflow-hidden">
+      {/* Floating decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full blur-3xl opacity-50 animate-float" />
+        <div className="absolute bottom-20 left-10 w-64 h-64 bg-gradient-to-br from-violet-100 to-pink-100 rounded-full blur-3xl opacity-40 animate-float-reverse" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent uppercase tracking-widest mb-4">
+            <span className="w-8 h-px bg-gradient-to-r from-blue-600 to-indigo-600" />
             Cómo Funciona
+            <span className="w-8 h-px bg-gradient-to-r from-indigo-600 to-blue-600" />
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 text-balance">
             Empieza en 3 simples pasos
           </h2>
-          <p className="mt-4 text-slate-500 max-w-xl mx-auto">
+          <p className="mt-5 text-lg text-slate-500 max-w-xl mx-auto">
             Configurar tu cuenta es rápido y sencillo. Sin complicaciones técnicas.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-6">
           {HOW_IT_WORKS.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -653,22 +682,30 @@ function HowItWorks() {
                 whileInView="visible"
                 viewport={{ once: true }}
                 custom={i}
-                className="relative"
+                className="relative group"
               >
                 {/* Connector line */}
                 {i < HOW_IT_WORKS.length - 1 && (
-                  <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-blue-200 to-transparent -translate-x-1/2 z-0" />
+                  <div className="hidden md:block absolute top-20 left-[calc(100%+1rem)] w-[calc(100%-2rem)] h-px">
+                    <div className="w-full h-full bg-gradient-to-r from-blue-300 via-indigo-300 to-transparent" />
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-indigo-300" />
+                  </div>
                 )}
                 
-                <div className="relative bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-lg hover:border-blue-100 transition-all duration-300 z-10">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25">
-                      <Icon className="w-7 h-7 text-white" />
+                <div className="relative glass-light rounded-3xl p-8 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 h-full card-hover">
+                  {/* Gradient border on hover */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/20 via-transparent to-violet-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 flex items-center justify-center shadow-xl shadow-blue-500/30 group-hover:shadow-blue-500/50 group-hover:scale-110 transition-all duration-500">
+                        <Icon className="w-8 h-8 text-white" />
+                      </div>
+                      <span className="text-5xl font-extrabold bg-gradient-to-br from-slate-200 to-slate-300 bg-clip-text text-transparent">{item.step}</span>
                     </div>
-                    <span className="text-4xl font-extrabold text-slate-200">{item.step}</span>
+                    <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-blue-700 transition-colors duration-300">{item.title}</h3>
+                    <p className="text-slate-500 leading-relaxed">{item.description}</p>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h3>
-                  <p className="text-slate-500 leading-relaxed">{item.description}</p>
                 </div>
               </motion.div>
             );
@@ -730,22 +767,30 @@ function ROICalculator() {
   );
 
   return (
-    <section id="calculadora" className="py-24 bg-[#F8FAFC]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="calculadora" className="py-28 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative overflow-hidden">
+      {/* Floating orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 right-0 w-96 h-96 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full blur-3xl opacity-40 animate-float-slow" />
+        <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full blur-3xl opacity-40 animate-float-reverse" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <span className="text-xs font-semibold text-blue-700 uppercase tracking-widest">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent uppercase tracking-widest mb-4">
+            <span className="w-8 h-px bg-gradient-to-r from-emerald-600 to-teal-600" />
             Herramienta gratuita
+            <span className="w-8 h-px bg-gradient-to-r from-teal-600 to-emerald-600" />
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">
-            Simulador de Rentabilidad por Porte
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900">
+            Simulador de Rentabilidad
           </h2>
-          <p className="mt-3 text-slate-500 max-w-xl mx-auto">
+          <p className="mt-4 text-lg text-slate-500 max-w-xl mx-auto">
             Introduce los datos de tu viaje y descubre al instante si realmente
             estás ganando dinero.
           </p>
@@ -757,7 +802,7 @@ function ROICalculator() {
           whileInView="visible"
           viewport={{ once: true }}
           custom={1}
-          className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden"
+          className="glass-light rounded-3xl shadow-xl shadow-slate-200/50 overflow-hidden"
         >
           <div className="grid lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
             {/* Inputs */}
@@ -936,31 +981,46 @@ function ROICalculator() {
 
 // ─── FEATURES ─────────────────────────────────────────────────────────────────
 function Features() {
+  const featureColors = [
+    { gradient: "from-blue-500 to-cyan-500", shadow: "shadow-blue-500/30", glow: "bg-blue-500/20" },
+    { gradient: "from-indigo-500 to-purple-500", shadow: "shadow-indigo-500/30", glow: "bg-indigo-500/20" },
+    { gradient: "from-violet-500 to-pink-500", shadow: "shadow-violet-500/30", glow: "bg-violet-500/20" },
+  ];
+
   return (
-    <section id="funcionalidades" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="funcionalidades" className="py-28 bg-gradient-to-b from-white via-slate-50/30 to-white relative overflow-hidden">
+      {/* Floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/3 left-5 w-64 h-64 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full blur-3xl opacity-50 animate-float" />
+        <div className="absolute bottom-1/3 right-5 w-72 h-72 bg-gradient-to-br from-violet-100 to-pink-100 rounded-full blur-3xl opacity-50 animate-float-reverse" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <span className="text-xs font-semibold text-blue-700 uppercase tracking-widest">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent uppercase tracking-widest mb-4">
+            <span className="w-8 h-px bg-gradient-to-r from-blue-600 to-violet-600" />
             Funcionalidades
+            <span className="w-8 h-px bg-gradient-to-r from-violet-600 to-blue-600" />
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900">
             Todo lo que necesita tu flota
           </h2>
-          <p className="mt-3 text-slate-500 max-w-xl mx-auto">
+          <p className="mt-5 text-lg text-slate-500 max-w-xl mx-auto">
             Diseñado específicamente para operadores de transporte español,
             desde autónomos hasta flotas medianas.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-8">
           {FEATURES.map((f, i) => {
             const Icon = f.icon;
+            const colors = featureColors[i];
             return (
               <motion.div
                 key={f.title}
@@ -969,18 +1029,24 @@ function Features() {
                 whileInView="visible"
                 viewport={{ once: true }}
                 custom={i}
-                whileHover={{ y: -6, boxShadow: "0 12px 32px rgba(30,58,138,0.10)" }}
-                className="bg-white rounded-2xl border border-slate-100 p-8 cursor-default transition-shadow duration-200 shadow-sm"
+                whileHover={{ y: -12, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="group relative"
               >
-                <div className={`w-12 h-12 rounded-xl ${f.bg} flex items-center justify-center mb-6`}>
-                  <Icon className={`w-6 h-6 ${f.color}`} />
+                {/* Glow effect */}
+                <div className={`absolute inset-0 ${colors.glow} rounded-3xl blur-2xl opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+                
+                <div className="relative glass-light rounded-3xl p-8 h-full cursor-default hover:bg-white transition-all duration-500">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${colors.gradient} flex items-center justify-center mb-6 shadow-lg ${colors.shadow} group-hover:scale-110 group-hover:shadow-xl transition-all duration-500`}>
+                    <Icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-blue-700 transition-colors duration-300">
+                    {f.title}
+                  </h3>
+                  <p className="text-slate-500 leading-relaxed">
+                    {f.description}
+                  </p>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-3">
-                  {f.title}
-                </h3>
-                <p className="text-slate-500 text-sm leading-relaxed">
-                  {f.description}
-                </p>
               </motion.div>
             );
           })}
@@ -1111,22 +1177,30 @@ function Pricing() {
 // ─── TESTIMONIALS ──────────────────────────────────────────────────────────────
 function Testimonials() {
   return (
-    <section id="testimonios" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="testimonios" className="py-28 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative overflow-hidden">
+      {/* Floating orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-1/4 w-80 h-80 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full blur-3xl opacity-40 animate-float" />
+        <div className="absolute bottom-20 right-1/4 w-72 h-72 bg-gradient-to-br from-rose-100 to-pink-100 rounded-full blur-3xl opacity-40 animate-float-reverse" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent uppercase tracking-widest mb-4">
+            <span className="w-8 h-px bg-gradient-to-r from-amber-600 to-orange-600" />
             Testimonios
+            <span className="w-8 h-px bg-gradient-to-r from-orange-600 to-amber-600" />
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 text-balance">
             Lo que dicen nuestros clientes
           </h2>
-          <p className="mt-4 text-slate-500 max-w-xl mx-auto">
+          <p className="mt-5 text-lg text-slate-500 max-w-xl mx-auto">
             Más de 500 empresas de transporte confían en AB Logistics OS para gestionar su operativa diaria.
           </p>
         </motion.div>
@@ -1140,36 +1214,43 @@ function Testimonials() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={i}
-              className="bg-slate-50 rounded-2xl p-8 relative"
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="group relative"
             >
-              {/* Quote mark */}
-              <div className="absolute top-6 right-6 text-6xl text-slate-200 font-serif leading-none">
-                &ldquo;
-              </div>
-              
-              {/* Rating */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(testimonial.rating)].map((_, j) => (
-                  <Star key={j} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                ))}
-              </div>
+              <div className="relative glass-light rounded-3xl p-8 h-full hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500">
+                {/* Quote mark */}
+                <div className="absolute top-6 right-6 text-7xl bg-gradient-to-br from-amber-200 to-orange-200 bg-clip-text text-transparent font-serif leading-none">
+                  &ldquo;
+                </div>
+                
+                {/* Rating */}
+                <div className="flex gap-1 mb-5">
+                  {[...Array(testimonial.rating)].map((_, j) => (
+                    <Star key={j} className="w-5 h-5 text-amber-400 fill-amber-400 drop-shadow-sm" />
+                  ))}
+                </div>
 
-              {/* Quote */}
-              <p className="text-slate-600 leading-relaxed mb-6 relative z-10">
-                &ldquo;{testimonial.quote}&rdquo;
-              </p>
+                {/* Quote */}
+                <p className="text-slate-600 leading-relaxed mb-8 relative z-10">
+                  &ldquo;{testimonial.quote}&rdquo;
+                </p>
 
-              {/* Author */}
-              <div className="flex items-center gap-4">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-semibold text-slate-900">{testimonial.name}</p>
-                  <p className="text-sm text-slate-500">{testimonial.role}</p>
-                  <p className="text-xs text-blue-600 font-medium">{testimonial.company}</p>
+                {/* Author */}
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="w-14 h-14 rounded-full object-cover ring-4 ring-white shadow-lg"
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full border-2 border-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">{testimonial.name}</p>
+                    <p className="text-sm text-slate-500">{testimonial.role}</p>
+                    <p className="text-xs bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-semibold">{testimonial.company}</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -1185,8 +1266,14 @@ function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-24 bg-slate-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="faq" className="py-28 bg-gradient-to-b from-white via-slate-50/50 to-white relative overflow-hidden">
+      {/* Floating orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 right-10 w-64 h-64 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full blur-3xl opacity-40 animate-float-slow" />
+        <div className="absolute bottom-1/4 left-10 w-56 h-56 bg-gradient-to-br from-violet-100 to-purple-100 rounded-full blur-3xl opacity-40 animate-float-reverse" />
+      </div>
+      
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -1194,13 +1281,15 @@ function FAQ() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent uppercase tracking-widest mb-4">
+            <span className="w-8 h-px bg-gradient-to-r from-blue-600 to-indigo-600" />
             FAQ
+            <span className="w-8 h-px bg-gradient-to-r from-indigo-600 to-blue-600" />
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 text-balance">
             Preguntas frecuentes
           </h2>
-          <p className="mt-4 text-slate-500">
+          <p className="mt-5 text-lg text-slate-500">
             Todo lo que necesitas saber sobre AB Logistics OS.
           </p>
         </motion.div>
@@ -1214,34 +1303,38 @@ function FAQ() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={i}
-              className="bg-white rounded-2xl border border-slate-100 overflow-hidden"
+              className="group"
             >
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors"
-              >
-                <span className="font-semibold text-slate-900 pr-4">{faq.question}</span>
-                <ChevronDown
-                  className={`w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300 ${
-                    openIndex === i ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="px-6 pb-6 text-slate-500 leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className={`glass-light rounded-2xl overflow-hidden transition-all duration-500 ${openIndex === i ? 'shadow-lg shadow-blue-500/10 bg-white' : 'hover:bg-white'}`}>
+                <button
+                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                  className="w-full flex items-center justify-between p-6 text-left"
+                >
+                  <span className={`font-semibold pr-4 transition-colors duration-300 ${openIndex === i ? 'text-blue-700' : 'text-slate-900'}`}>{faq.question}</span>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${openIndex === i ? 'bg-gradient-to-r from-blue-500 to-indigo-500' : 'bg-slate-100'}`}>
+                    <ChevronDown
+                      className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ${
+                        openIndex === i ? "rotate-180 text-white" : "text-slate-500"
+                      }`}
+                    />
+                  </div>
+                </button>
+                <AnimatePresence>
+                  {openIndex === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-6 pb-6 text-slate-500 leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -1253,11 +1346,20 @@ function FAQ() {
 // ─── CTA BANNER ────────────────────────────────────────────────────────────────
 function CTABanner() {
   return (
-    <section className="py-24 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 relative overflow-hidden">
-      {/* Background decorations */}
+    <section className="py-28 relative overflow-hidden">
+      {/* Animated mesh gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 animate-gradient">
+        <div className="absolute inset-0 opacity-50">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_rgba(255,255,255,0.15),_transparent_50%)]" />
+          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_rgba(255,255,255,0.1),_transparent_50%)]" />
+        </div>
+      </div>
+      
+      {/* Floating orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/10 rounded-full blur-[100px] animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-white/10 rounded-full blur-[100px] animate-float-reverse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-[120px] animate-glow-pulse" />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -1267,33 +1369,47 @@ function CTABanner() {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 text-balance">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 glass rounded-full px-5 py-2 mb-8"
+          >
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-white/90">Activa tu prueba gratuita ahora</span>
+          </motion.div>
+          
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white mb-6 text-balance leading-tight">
             Empieza a proteger los márgenes de tu flota hoy
           </h2>
-          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-blue-100/90 mb-12 max-w-2xl mx-auto">
             Únete a más de 500 empresas de transporte que ya optimizan su rentabilidad con AB Logistics OS.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href={APP_URL}
-              className="group inline-flex items-center gap-2 bg-white text-blue-600 font-semibold text-base px-8 py-4 rounded-2xl shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:shadow-blue-900/30 transition-all duration-300"
+              className="group relative inline-flex items-center gap-2 bg-white text-blue-600 font-semibold text-base px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden"
             >
-              Empezar Prueba Gratuita
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-blue-100 to-transparent skew-x-12" />
+              <span className="relative flex items-center gap-2">
+                Empezar Prueba Gratuita
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
             </a>
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-white font-semibold text-base px-8 py-4 rounded-2xl border-2 border-white/30 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
+              className="group inline-flex items-center gap-2 text-white font-semibold text-base px-8 py-4 rounded-2xl glass hover:bg-white/20 transition-all duration-300"
             >
-              <MessageCircle className="w-5 h-5" />
+              <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
               Hablar por WhatsApp
             </a>
           </div>
 
-          <p className="mt-8 text-sm text-blue-200">
+          <p className="mt-10 text-sm text-blue-200/80">
             Sin tarjeta de crédito requerida. 14 días de prueba gratuita.
           </p>
         </motion.div>
@@ -1304,102 +1420,145 @@ function CTABanner() {
 
 // ─── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────────────
 function WhatsAppButton() {
+  const [isHovered, setIsHovered] = useState(false);
+  
   return (
-    <a
+    <motion.a
       href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-3.5 rounded-full shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 group"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: 1, type: "spring", stiffness: 200, damping: 15 }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold px-5 py-4 rounded-2xl shadow-lg shadow-green-500/40 hover:shadow-xl hover:shadow-green-500/50 transition-all duration-300"
     >
-      <span className="absolute -inset-1 bg-green-400 rounded-full animate-ping opacity-20" />
-      <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-      <span className="hidden sm:inline">WhatsApp</span>
-    </a>
+      {/* Glow effect */}
+      <span className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-400 rounded-2xl blur-lg opacity-40 animate-glow-pulse" />
+      
+      {/* Content */}
+      <span className="relative flex items-center gap-3">
+        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <AnimatePresence>
+          {isHovered && (
+            <motion.span
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: "auto", opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden whitespace-nowrap"
+            >
+              WhatsApp
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </span>
+    </motion.a>
   );
 }
 
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="bg-slate-950 text-slate-400">
-      {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25">
-                <Zap className="w-5 h-5 text-white" />
+    <footer className="relative overflow-hidden">
+      {/* Gradient top border */}
+      <div className="h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500" />
+      
+      {/* Background with subtle gradient */}
+      <div className="bg-slate-950 text-slate-400 relative">
+        {/* Floating orbs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+          <div className="absolute top-20 left-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-[100px]" />
+          <div className="absolute bottom-20 right-1/4 w-64 h-64 bg-violet-500/20 rounded-full blur-[100px]" />
+        </div>
+        
+        {/* Main footer */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <span className="font-bold text-white text-xl">AB Logistics OS</span>
               </div>
-              <span className="font-bold text-white text-lg">AB Logistics OS</span>
+              <p className="text-sm leading-relaxed mb-6 text-slate-400/80">
+                El ERP de transporte y logística más completo de España. Diseñado en A Coruña, Galicia.
+              </p>
+              <div className="flex gap-3">
+                <a href="#" className="w-10 h-10 rounded-xl glass hover:bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+                <a href="#" className="w-10 h-10 rounded-xl glass hover:bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+              </div>
             </div>
-            <p className="text-sm leading-relaxed mb-6">
-              El ERP de transporte y logística más completo de España. Diseñado en A Coruña, Galicia.
-            </p>
-            <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-              </a>
-            </div>
-          </div>
 
           {/* Links - Producto */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4">Producto</h4>
+            <h4 className="text-sm font-semibold text-white mb-5">Producto</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="#funcionalidades" className="hover:text-white transition-colors">Funcionalidades</a></li>
-              <li><a href="#precios" className="hover:text-white transition-colors">Precios</a></li>
-              <li><a href="#calculadora" className="hover:text-white transition-colors">Calculadora ROI</a></li>
-              <li><a href="#como-funciona" className="hover:text-white transition-colors">Cómo Funciona</a></li>
-              <li><a href="#testimonios" className="hover:text-white transition-colors">Testimonios</a></li>
+              <li><a href="#funcionalidades" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Funcionalidades</a></li>
+              <li><a href="#precios" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Precios</a></li>
+              <li><a href="#calculadora" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Calculadora ROI</a></li>
+              <li><a href="#como-funciona" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Cómo Funciona</a></li>
+              <li><a href="#testimonios" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Testimonios</a></li>
             </ul>
           </div>
 
           {/* Links - Recursos */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4">Recursos</h4>
+            <h4 className="text-sm font-semibold text-white mb-5">Recursos</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Guía VeriFactu</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">API Docs</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Centro de Ayuda</a></li>
+              <li><a href="#faq" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">FAQ</a></li>
+              <li><a href="#" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Blog</a></li>
+              <li><a href="#" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Guía VeriFactu</a></li>
+              <li><a href="#" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">API Docs</a></li>
+              <li><a href="#" className="hover:text-white hover:translate-x-1 transition-all duration-300 inline-block">Centro de Ayuda</a></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4">Contacto</h4>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-blue-400" />
+            <h4 className="text-sm font-semibold text-white mb-5">Contacto</h4>
+            <ul className="space-y-4 text-sm">
+              <li className="flex items-center gap-3 group">
+                <div className="w-8 h-8 rounded-lg glass flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                  <Mail className="w-4 h-4 text-blue-400" />
+                </div>
                 <a href="mailto:hola@ablogistics-os.com" className="hover:text-white transition-colors">
                   hola@ablogistics-os.com
                 </a>
               </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-blue-400" />
+              <li className="flex items-center gap-3 group">
+                <div className="w-8 h-8 rounded-lg glass flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                  <Phone className="w-4 h-4 text-blue-400" />
+                </div>
                 <a href={`tel:+${WHATSAPP_NUMBER}`} className="hover:text-white transition-colors">
                   +34 643 747 195
                 </a>
               </li>
-              <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-blue-400 mt-0.5" />
-                <span>A Coruña, Galicia<br />España</span>
+              <li className="flex items-center gap-3 group">
+                <div className="w-8 h-8 rounded-lg glass flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                  <MapPin className="w-4 h-4 text-blue-400" />
+                </div>
+                <span>A Coruña, Galicia, España</span>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Legal links */}
-        <div className="border-t border-slate-800 pt-8">
+        <div className="border-t border-slate-800/50 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm">© 2026 AB Logistics OS. Todos los derechos reservados.</p>
+            <p className="text-sm text-slate-500">© 2026 AB Logistics OS. Todos los derechos reservados.</p>
             <div className="flex flex-wrap justify-center gap-6 text-sm">
               <a href="#" className="hover:text-white transition-colors">Aviso Legal</a>
               <a href="#" className="hover:text-white transition-colors">Privacidad (RGPD)</a>
@@ -1407,6 +1566,7 @@ function Footer() {
               <a href="#" className="hover:text-white transition-colors">Términos de Servicio</a>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </footer>

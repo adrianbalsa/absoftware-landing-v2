@@ -125,7 +125,7 @@ function Navbar() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-sm shadow-sm border-b border-slate-100"
+          ? "bg-[#F8FAFC]/95 backdrop-blur-sm shadow-sm border-b border-slate-100"
           : "bg-transparent"
       }`}
     >
@@ -133,8 +133,8 @@ function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-blue-800 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-[#F8FAFC]" />
             </div>
             <span className="font-bold text-slate-900 text-[15px] tracking-tight">
               AB Logistics OS
@@ -164,7 +164,7 @@ function Navbar() {
             </a>
             <a
               href={APP_URL}
-              className="text-sm font-semibold bg-blue-800 text-white rounded-xl px-4 py-2 hover:bg-blue-700 transition-all shadow-sm hover:shadow-md"
+              className="text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 text-[#F8FAFC] rounded-xl px-4 py-2 hover:bg-blue-700 transition-all shadow-sm hover:shadow-md"
             >
               Acceso Clientes
             </a>
@@ -187,7 +187,7 @@ function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-slate-100 px-4 pb-4 overflow-hidden"
+            className="md:hidden bg-[#F8FAFC] border-b border-slate-100 px-4 pb-4 overflow-hidden"
           >
             <div className="flex flex-col gap-3 pt-2">
               {NAV_LINKS.map((l) => (
@@ -202,7 +202,7 @@ function Navbar() {
               ))}
               <a
                 href={APP_URL}
-                className="mt-2 text-center text-sm font-semibold bg-blue-800 text-white rounded-xl px-4 py-2.5"
+                className="mt-2 text-center text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 text-[#F8FAFC] rounded-xl px-4 py-2.5"
               >
                 Acceso Clientes
               </a>
@@ -217,7 +217,7 @@ function Navbar() {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-to-b from-slate-50 via-white to-blue-50 overflow-hidden pt-16">
+    <section className="relative min-h-screen flex items-center bg-gradient-to-b from-slate-50 via-[#F8FAFC] to-blue-50 overflow-hidden pt-16">
       {/* Subtle grid background */}
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -249,7 +249,7 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={1}
-          className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight max-w-4xl mx-auto"
+          className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900"
         >
           Inteligencia Logística y{" "}
           <span className="text-blue-700">Control de Márgenes.</span>
@@ -277,14 +277,14 @@ function Hero() {
         >
           <a
             href={APP_URL}
-            className="inline-flex items-center gap-2 bg-blue-800 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 hover:bg-blue-700 text-[#F8FAFC] font-semibold text-sm px-7 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200"
           >
             Empezar Prueba Gratuita
             <ChevronRight className="w-4 h-4" />
           </a>
           <a
             href="mailto:hola@ablogistics-os.com"
-            className="inline-flex items-center gap-2 text-blue-800 font-semibold text-sm px-7 py-3.5 rounded-2xl border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+            className="inline-flex items-center gap-2 text-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 font-semibold text-sm px-7 py-3.5 rounded-2xl border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
           >
             Solicitar Demo
           </a>
@@ -314,7 +314,7 @@ function Hero() {
           custom={5}
           className="mt-16 max-w-5xl mx-auto relative rounded-xl overflow-hidden shadow-2xl border border-slate-200/50"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 to-transparent pointer-events-none"></div>
+          <div className="absolute -inset-10 bg-indigo-500/20 rounded-full blur-[120px] pointer-events-none" />
           <img 
             src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" 
             alt="Dashboard de AB Logistics OS" 
@@ -368,7 +368,7 @@ function ROICalculator() {
           step={step}
           value={value}
           onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all pr-10"
+          className="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all pr-10"
         />
         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium">
           {suffix}
@@ -405,7 +405,7 @@ function ROICalculator() {
           whileInView="visible"
           viewport={{ once: true }}
           custom={1}
-          className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden"
+          className="bg-[#F8FAFC] rounded-3xl shadow-sm border border-slate-100 overflow-hidden"
         >
           <div className="grid lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
             {/* Inputs */}
@@ -495,25 +495,25 @@ function ROICalculator() {
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.2 }}
-                  className={`rounded-2xl p-5 border ${
+                  className={`rounded-3xl p-6 border-2 transition-colors ${
                     isLoss
-                      ? "bg-red-50 border-red-100"
-                      : "bg-green-50 border-green-100"
+                      ? "bg-red-50 border-red-200"
+                      : "bg-emerald-50 border-emerald-200"
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 mb-2">
+                  <div className="flex items-center gap-2 mb-3">
                     {isLoss ? (
-                      <TrendingDown className="w-4 h-4 text-red-500" />
+                      <TrendingDown className="w-5 h-5 text-red-500" />
                     ) : (
-                      <TrendingUp className="w-4 h-4 text-green-600" />
+                      <TrendingUp className="w-5 h-5 text-emerald-600" />
                     )}
-                    <span className="text-xs font-medium text-slate-500">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                       Beneficio Neto
                     </span>
                   </div>
                   <p
-                    className={`text-2xl font-extrabold ${
-                      isLoss ? "text-red-600" : "text-green-600"
+                    className={`text-3xl sm:text-4xl font-black ${
+                      isLoss ? "text-red-600" : "text-emerald-600"
                     }`}
                   >
                     {fmt(netProfit)} €
@@ -525,25 +525,25 @@ function ROICalculator() {
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.2 }}
-                  className={`rounded-2xl p-5 border ${
+                  className={`rounded-3xl p-6 border-2 transition-colors ${
                     isLoss
-                      ? "bg-red-50 border-red-100"
-                      : "bg-blue-50 border-blue-100"
+                      ? "bg-red-50 border-red-200"
+                      : "bg-indigo-50 border-indigo-200"
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 mb-2">
+                  <div className="flex items-center gap-2 mb-3">
                     <BarChart3
-                      className={`w-4 h-4 ${
-                        isLoss ? "text-red-500" : "text-blue-600"
+                      className={`w-5 h-5 ${
+                        isLoss ? "text-red-500" : "text-indigo-600"
                       }`}
                     />
-                    <span className="text-xs font-medium text-slate-500">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                       Margen
                     </span>
                   </div>
                   <p
-                    className={`text-2xl font-extrabold ${
-                      isLoss ? "text-red-600" : "text-blue-700"
+                    className={`text-3xl sm:text-4xl font-black ${
+                      isLoss ? "text-red-600" : "text-indigo-700"
                     }`}
                   >
                     {fmt(margin, 1)}%
@@ -585,7 +585,7 @@ function ROICalculator() {
 // ─── FEATURES ─────────────────────────────────────────────────────────────────
 function Features() {
   return (
-    <section id="funcionalidades" className="py-24 bg-white">
+    <section id="funcionalidades" className="py-24 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={fadeUp}
@@ -618,7 +618,7 @@ function Features() {
                 viewport={{ once: true }}
                 custom={i}
                 whileHover={{ y: -6, boxShadow: "0 12px 32px rgba(30,58,138,0.10)" }}
-                className="bg-white rounded-2xl border border-slate-100 p-8 cursor-default transition-shadow duration-200 shadow-sm"
+                className="bg-[#F8FAFC] rounded-2xl border border-slate-100 p-8 cursor-default transition-shadow duration-200 shadow-sm"
               >
                 <div className={`w-12 h-12 rounded-xl ${f.bg} flex items-center justify-center mb-6`}>
                   <Icon className={`w-6 h-6 ${f.color}`} />
@@ -661,7 +661,7 @@ function Pricing() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 items-stretch">
+        <div className="grid md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
           {PLANS.map((plan, i) => (
             <motion.div
               key={plan.name}
@@ -670,15 +670,15 @@ function Pricing() {
               whileInView="visible"
               viewport={{ once: true }}
               custom={i}
-              className={`relative rounded-2xl p-8 flex flex-col border transition-shadow duration-200 ${
+              className={`relative rounded-3xl p-8 flex flex-col border transition-all duration-300 ${
                 plan.popular
-                  ? "bg-blue-800 border-blue-700 shadow-lg shadow-blue-900/20"
-                  : "bg-white border-slate-100 shadow-sm hover:shadow-md"
+                  ? "bg-slate-900 border-indigo-500 shadow-2xl shadow-indigo-900/20 md:-translate-y-4 z-10"
+                  : "bg-white border-slate-200 shadow-sm hover:shadow-md"
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="bg-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-sm">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <span className="bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-full shadow-md uppercase tracking-wider">
                     Más popular
                   </span>
                 </div>
@@ -687,7 +687,7 @@ function Pricing() {
               <div className="mb-6">
                 <h3
                   className={`text-xl font-bold mb-1 ${
-                    plan.popular ? "text-white" : "text-slate-900"
+                    plan.popular ? "text-[#F8FAFC]" : "text-slate-900"
                   }`}
                 >
                   {plan.name}
@@ -705,7 +705,7 @@ function Pricing() {
                 {plan.price === "Custom" ? (
                   <span
                     className={`text-3xl font-extrabold ${
-                      plan.popular ? "text-white" : "text-slate-900"
+                      plan.popular ? "text-[#F8FAFC]" : "text-slate-900"
                     }`}
                   >
                     A medida
@@ -714,7 +714,7 @@ function Pricing() {
                   <div className="flex items-end gap-1">
                     <span
                       className={`text-4xl font-extrabold ${
-                        plan.popular ? "text-white" : "text-slate-900"
+                        plan.popular ? "text-[#F8FAFC]" : "text-slate-900"
                       }`}
                     >
                       {plan.price}€
@@ -740,7 +740,7 @@ function Pricing() {
                     >
                       <Check
                         className={`w-3 h-3 ${
-                          plan.popular ? "text-white" : "text-blue-700"
+                          plan.popular ? "text-[#F8FAFC]" : "text-blue-700"
                         }`}
                       />
                     </div>
@@ -759,8 +759,8 @@ function Pricing() {
                 href={APP_URL}
                 className={`text-center text-sm font-semibold py-3 rounded-xl transition-all duration-200 ${
                   plan.popular
-                    ? "bg-white text-blue-800 hover:bg-blue-50"
-                    : "bg-blue-800 text-white hover:bg-blue-700"
+                    ? "bg-[#F8FAFC] text-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 hover:bg-blue-50"
+                    : "bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 text-[#F8FAFC] hover:bg-blue-700"
                 }`}
               >
                 Crear Cuenta
@@ -783,9 +783,9 @@ function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-                <Zap className="w-3.5 h-3.5 text-white" />
+                <Zap className="w-3.5 h-3.5 text-[#F8FAFC]" />
               </div>
-              <span className="font-bold text-white text-sm">AB Logistics OS</span>
+              <span className="font-bold text-[#F8FAFC] text-sm">AB Logistics OS</span>
             </div>
             <p className="text-sm leading-relaxed">
               Software de gestión de transporte y logística en Galicia.
@@ -795,11 +795,11 @@ function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4">Producto</h4>
+            <h4 className="text-sm font-semibold text-[#F8FAFC] mb-4">Producto</h4>
             <ul className="space-y-2 text-sm">
               {["Funcionalidades", "Precios", "Calculadora ROI", "VeriFactu"].map((l) => (
                 <li key={l}>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="#" className="hover:text-[#F8FAFC] transition-colors">
                     {l}
                   </a>
                 </li>
@@ -809,25 +809,25 @@ function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
+            <h4 className="text-sm font-semibold text-[#F8FAFC] mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-[#F8FAFC] transition-colors">
                   Aviso Legal
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-[#F8FAFC] transition-colors">
                   Política de Privacidad (RGPD)
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-[#F8FAFC] transition-colors">
                   Política de Cookies
                 </a>
               </li>
               <li>
-                <a href="mailto:hola@ablogistics-os.com" className="hover:text-white transition-colors">
+                <a href="mailto:hola@ablogistics-os.com" className="hover:text-[#F8FAFC] transition-colors">
                   hola@ablogistics-os.com
                 </a>
               </li>

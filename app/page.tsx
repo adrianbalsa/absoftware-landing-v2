@@ -1,11 +1,13 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Shield,
   Smartphone,
   BarChart3,
+  Calculator,
+  Clock,
+  FileText,
   Check,
   Menu,
   X,
@@ -29,70 +31,85 @@ const FEATURES = [
   {
     icon: Shield,
     title: "Certificación VeriFactu",
-    description:
-      "Emisión de facturas con hash encadenado y registro inmutable, listas para la Agencia Tributaria. Cumple la Ley Antifraude desde el primer día.",
-    color: "text-blue-700",
-    bg: "bg-blue-50",
-  },
-  {
-    icon: Smartphone,
-    title: "Portal del Conductor Móvil",
-    description:
-      "Los chóferes suben tickets de gasoil y CMRs escaneando un QR desde su móvil. Sin papel, sin pérdidas, sin retrasos en la liquidación.",
-    color: "text-indigo-700",
+    description: "Facturación blindada y conectada con la AEAT. Evita sanciones cumpliendo la Ley Antifraude 2026 de forma automática.",
+    color: "text-indigo-600",
     bg: "bg-indigo-50",
   },
   {
     icon: BarChart3,
-    title: "Dashboard de EBITDA",
-    description:
-      "Descubre qué rutas son rentables y cuáles te están descapitalizando. Visualiza impuestos trimestrales y proyecciones de flujo de caja.",
-    color: "text-sky-700",
-    bg: "bg-sky-50",
+    title: "EBITDA en Tiempo Real",
+    description: "Cruza ingresos con gastos de combustible, peajes y amortización para saber exactamente qué rutas son rentables.",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+  },
+  {
+    icon: Smartphone,
+    title: "Portal del Chófer",
+    description: "Tus conductores suben tickets y CMRs con una foto desde el móvil. Cero papeleo perdido en la cabina del camión.",
+    color: "text-blue-600",
+    bg: "bg-blue-50",
+  },
+  {
+    icon: Calculator,
+    title: "Cotizador Inteligente",
+    description: "Calcula el precio mínimo al que debes aceptar un viaje para no perder dinero, considerando los costes variables actuales.",
+    color: "text-amber-600",
+    bg: "bg-amber-50",
+  },
+  {
+    icon: Clock,
+    title: "Control de Vencimientos",
+    description: "Alertas automáticas para renovaciones de ITV, seguros, tarjetas de transporte y mantenimientos preventivos.",
+    color: "text-rose-600",
+    bg: "bg-rose-50",
+  },
+  {
+    icon: FileText,
+    title: "Liquidaciones Automáticas",
+    description: "Genera el pago de dietas y nóminas variables de tus conductores en un clic en base a los viajes registrados.",
+    color: "text-cyan-600",
+    bg: "bg-cyan-50",
   },
 ];
 
 const PLANS = [
   {
     name: "Starter",
-    price: "49",
-    description: "Para autónomos y microempresas",
+    price: "19",
+    description: "Cumplimiento legal y control básico para autónomos.",
     popular: false,
     features: [
-      "1 vehículo",
-      "Facturación VeriFactu",
-      "Portal conductor básico",
-      "Soporte por email",
-      "Exportación a Excel",
+      "Hasta 2 vehículos",
+      "Facturación VeriFactu obligatoria",
+      "Portal móvil para 2 chóferes",
+      "Gestión de gastos básicos",
+      "Soporte por email (48h)",
     ],
   },
   {
     name: "Pro",
-    price: "129",
-    description: "Para flotas de 2 a 20 vehículos",
+    price: "49",
+    description: "Control de rentabilidad para flotas en crecimiento.",
     popular: true,
     features: [
-      "Hasta 20 vehículos",
-      "Dashboard EBITDA completo",
-      "Portal conductor ilimitado",
-      "Calculadora ROI por porte",
-      "Integración AEAT automática",
-      "Soporte prioritario",
-      "API REST incluida",
+      "Hasta 15 vehículos",
+      "Dashboard de EBITDA en tiempo real",
+      "Simulador de rentabilidad por porte",
+      "Control de vencimientos (ITV, Seguros)",
+      "Soporte prioritario (24h)",
     ],
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    description: "Para grandes operadores logísticos",
+    price: "89",
+    description: "Analítica avanzada y automatización total.",
     popular: false,
     features: [
       "Vehículos ilimitados",
-      "Multi-empresa y multi-delegación",
-      "SLA 99.9% garantizado",
-      "Onboarding dedicado",
-      "Integración ERP corporativo",
-      "Gestor de cuenta exclusivo",
+      "Liquidación automática de chóferes",
+      "Integración API con bancos",
+      "Gestión multi-empresa",
+      "Gestor de cuenta personal",
     ],
   },
 ];
@@ -134,7 +151,7 @@ function Navbar() {
           {/* Logo */}
           <a href="#" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-[#F8FAFC]" />
+              <img src="/logo.png" alt="AB Logo" className="w-8 h-8 object-contain" />
             </div>
             <span className="font-bold text-slate-900 text-[15px] tracking-tight">
               AB Logistics OS
@@ -164,7 +181,7 @@ function Navbar() {
             </a>
             <a
               href={APP_URL}
-              className="text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 text-[#F8FAFC] rounded-xl px-4 py-2 hover:bg-blue-700 transition-all shadow-sm hover:shadow-md"
+              className="text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/30 text-white rounded-xl px-5 py-2.5"
             >
               Acceso Clientes
             </a>
@@ -277,7 +294,7 @@ function Hero() {
         >
           <a
             href={APP_URL}
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 hover:bg-blue-700 text-[#F8FAFC] font-semibold text-sm px-7 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/30 text-white font-semibold text-sm px-7 py-3.5 rounded-2xl"
           >
             Empezar Prueba Gratuita
             <ChevronRight className="w-4 h-4" />
@@ -298,7 +315,7 @@ function Hero() {
           custom={4}
           className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400"
         >
-          {["Sin tarjeta de crédito", "14 días gratis", "Cancela cuando quieras"].map((t) => (
+          {["Soporte técnico en España", "Configuración en 24h", "Cumplimiento normativo"].map((t) => (
             <span key={t} className="flex items-center gap-1.5">
               <Check className="w-3.5 h-3.5 text-green-500" />
               {t}
@@ -316,10 +333,10 @@ function Hero() {
         >
           <div className="absolute -inset-10 bg-indigo-500/20 rounded-full blur-[120px] pointer-events-none" />
           <img 
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" 
-            alt="Dashboard de AB Logistics OS" 
-            className="w-full h-auto object-cover rounded-xl"
-          />
+             src="/dashboard.png" 
+             alt="Dashboard de Gestión AB Logistics OS" 
+             className="w-full h-auto object-cover rounded-xl border border-slate-200 shadow-2xl"
+           />
         </motion.div>
 
       </div>
@@ -783,7 +800,7 @@ function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-                <Zap className="w-3.5 h-3.5 text-[#F8FAFC]" />
+                <img src="/logo.png" alt="AB Logo" className="w-8 h-8 object-contain" />
               </div>
               <span className="font-bold text-[#F8FAFC] text-sm">AB Logistics OS</span>
             </div>

@@ -150,9 +150,7 @@ function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-500/20 flex items-center justify-center">
-              <img src="/logo.png" alt="AB Logo" className="w-8 h-8 object-contain" />
-            </div>
+            <img src="/logo.png" alt="AB Logo" className="w-9 h-9 object-contain" />
             <span className="font-bold text-slate-900 text-[15px] tracking-tight">
               AB Logistics OS
             </span>
@@ -799,9 +797,7 @@ function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-                <img src="/logo.png" alt="AB Logo" className="w-8 h-8 object-contain" />
-              </div>
+              <img src="/logo.png" alt="AB Logo" className="w-8 h-8 object-contain" />
               <span className="font-bold text-[#F8FAFC] text-sm">AB Logistics OS</span>
             </div>
             <p className="text-sm leading-relaxed">

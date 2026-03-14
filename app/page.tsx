@@ -825,17 +825,17 @@ function Footer() {
             <h4 className="text-sm font-semibold text-[#F8FAFC] mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="hover:text-[#F8FAFC] transition-colors">
+                <a href="/aviso-legal" className="hover:text-[#F8FAFC] transition-colors">
                   Aviso Legal
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#F8FAFC] transition-colors">
+                <a href="/privacidad" className="hover:text-[#F8FAFC] transition-colors">
                   Política de Privacidad (RGPD)
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#F8FAFC] transition-colors">
+                <a href="/cookies" className="hover:text-[#F8FAFC] transition-colors">
                   Política de Cookies
                 </a>
               </li>
